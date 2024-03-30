@@ -1,0 +1,2 @@
+create,delete database query in mongodb api
+create,delete collection query in mongodb api [DONE]
