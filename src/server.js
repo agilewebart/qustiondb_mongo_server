@@ -6,9 +6,7 @@ const PORT = config.BACKEND_HOST.PORT || 9000;
 const collectionModify = require('./controller/dbManageController');
 const qustionInfo = require('./controller/qustionController');
 
-const mongo_conn = require('./db_connection/mongo_db_conn');
-// const users = await mongo_conn.executeQry('allqustions');
-// console.log("-----> ",await users.find().toArray())
+const qustionModifier = require('../src/middleware/onlyQustion')
 
 
 
@@ -17,7 +15,9 @@ app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 app.use(cors());
 app.use('/api/v1',collectionModify)
-app.use('/api/v1',qustionInfo)
+app.use('/api/v1', qustionModifier.onlyQustions, qustionInfo)
+// app.use('/api/v1', qustionInfo)
+
 
 
 

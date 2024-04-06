@@ -1,20 +1,22 @@
 const dbConn = require('../db_connection/mongo_db_conn');
 const resStruc = require('../constants/respStructure');
 
-
-
-
-
-//------------------ Model for fetch qustion by id -----------------
-module.exports.getQustionById = async (body) => {
+//------------------ Dao for fetch all qustions  -----------------
+module.exports.getAllQustions = async (queryParam) => {
     try {
-        let reqbody = body;
-        let collection = await dbConn.executeQry('qustion_db', 'allqustions');
-        const limit = parseInt(reqbody.limit) || 10; // Default to 10 if limit is not provided or not a valid number
-        const offset = parseInt(reqbody.offset) || 0; // Default to 0 if offset is not provided or not a valid number
+        let query = queryParam;
 
-        const documents = await collection.findOne({}).skip(offset).limit(limit).toArray();
-        return documents;
+        const page = Number(query.page); // 1 , 2
+        const limit = Number(query.limit); // 5 , 5
+        const skip = (page - 1) * limit; // 0 , 10
+        // const skip = (page - 1) * 10; // 0 , 10
+
+        
+
+        let collection = await dbConn.executeQry('qustion_db', 'allqustions');
+
+        const documents = await collection.find().skip(skip).limit(limit).toArray();
+        return { documents, page, limit };
 
     } catch (err) {
         console.log("---dao>> ", err)
@@ -25,7 +27,8 @@ module.exports.getQustionById = async (body) => {
 
 
 
-//------------------ Model for fetch qustion by id -----------------
+
+//------------------ Dao for fetch qustion by id -----------------
 module.exports.getQustionById = async (body) => {
     try {
         let qustionId = body.qustionId;
@@ -41,7 +44,7 @@ module.exports.getQustionById = async (body) => {
 
 
 
-//-------------------- Model for fetch qustion by qustion type --------------
+//-------------------- Dao for fetch qustion by qustion type --------------
 module.exports.getQustionByQustionType = async (body) => {
     try {
         let qustionType = body.qustionType;
@@ -63,7 +66,7 @@ module.exports.getQustionByQustionType = async (body) => {
 }
 
 
-//-------------------- Model for fetch qustion by qustion type --------------
+//-------------------- Dao for fetch qustion by qustion type --------------
 module.exports.getQustionByQustionInfo = async (body) => {
     try {
         let qustionInfo = body;
@@ -97,7 +100,18 @@ module.exports.getQustionByQustionInfo = async (body) => {
 
 
 
+    } catch (err) {
+        console.log("---dao>> ", err)
+        return -500
+    }
+}
 
+
+//------------- Dao for fetch qustion by order ---------------
+module.exports.getOrderWiseQustions = async (body) => {
+    try {
+        let qustionOrderArr = body.orderArr;
+        let collection = await dbConn.executeQry('qustion_db', 'allqustions');
 
     } catch (err) {
         console.log("---dao>> ", err)

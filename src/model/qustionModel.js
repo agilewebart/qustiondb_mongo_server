@@ -3,22 +3,23 @@ const qustionDao = require('../dao/qustionDao');
 const respStruc = require('../constants/respStructure')
 
 //============= Modal of get all qustions ====== 
-module.exports.get_All_Qustion = async (body) => {
+module.exports.get_All_Qustions = async (queryParam) => {
     try {
 
-        let reqBody = body;
-        if (reqBody.getAll == 'list' && reqBody.limit && reqBody.offset) {
+        let query = queryParam;
+        if (query.view && query.page && query.limit && query.limit > 0 && query.page > 0) {
 
-            let result = await qustionDao.getQustionById(reqBody);
-            
+            let result = await qustionDao.getAllQustions(query);
+
+
             if (result == null || result.length == 0) {
-                return respStruc.responseStruct(1, true, 200, 'No data found', result);
+                return respStruc.responseStruct(1, true, 200, 'No data found', []);
             }
             else if (result == -500) {
                 return respStruc.responseStruct(0, false, 500, 'Internal server error', false);
             }
             else {
-                return respStruc.responseStruct(1, true, 200, 'Data fetch successfully', [result]);
+                return respStruc.responseStruct_lim_off(1, true, 200, 'Data fetch successfully', result.page, result.limit, result.documents);
             }
         }
 
@@ -27,7 +28,6 @@ module.exports.get_All_Qustion = async (body) => {
         }
 
     } catch (err) {
-        console.log("---modal>> ", err)
         return respStruc.responseStruct(0, false, 500, 'Internal server error', false);
     }
 }
@@ -78,7 +78,7 @@ module.exports.get_Qustion_by_qustionType = async (body) => {
             return respStruc.responseStruct(0, false, 500, 'Internal server error', false);
         }
         else {
-            return respStruc.responseStruct(1, true, 200, 'Data fetch successfully', [result]);
+            return respStruc.responseStruct(1, true, 200, 'Data fetch successfully', result);
         }
 
     } catch (err) {
@@ -104,13 +104,50 @@ module.exports.get_Qustion_by_qustionInfo = async (body) => {
                 return respStruc.responseStruct(0, false, 500, 'Internal server error', false);
             }
             else {
-                return respStruc.responseStruct(1, true, 200, 'Data fetch successfully', [result]);
+                return respStruc.responseStruct(1, true, 200, 'Data fetch successfully', result);
+
+                // if (reqBody.purposeType == 'exam') {
+                //     let storeResult = result;
+                //     let modifiedResult = [];
+
+                //     //-------- Sending qustion against purpose ----------------
+                //     storeResult.forEach((parentArr) => {
+                //         parentArr.question.map((onlyQus) => {
+                //             modifiedResult.push({ qustion: onlyQus.context })
+                //         })
+                //     })
+
+                //     return respStruc.responseStruct(1, true, 200, 'Data fetch successfully', modifiedResult);
+
+
+                // }
+                // else {
+                //     return respStruc.responseStruct(1, true, 200, 'Data fetch successfully', result);
+                // }
             }
         }
 
         else {
+
             return respStruc.responseStruct(1, false, 400, 'Bad request', false)
         }
+
+    } catch (err) {
+        console.log("---modal>> ", err)
+        return respStruc.responseStruct(0, false, 500, 'Internal server error', false);
+    }
+}
+
+
+
+//============= Model for get order wise qustion =========================
+module.exports.get_order_wise_qustions = async (body) => {
+    try {
+
+        let reqBody = body;
+        let result = await qustionDao.getOrderWiseQustions(reqBody);
+
+
 
     } catch (err) {
         console.log("---modal>> ", err)
