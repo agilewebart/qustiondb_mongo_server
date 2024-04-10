@@ -1,5 +1,6 @@
 const dbConn = require('../db_connection/mongo_db_conn');
 const resStruc = require('../constants/respStructure');
+const utils = require('../utils/dataLog')
 
 //------------------ Dao for fetch all qustions  -----------------
 module.exports.getAllQustions = async (queryParam) => {
@@ -11,15 +12,13 @@ module.exports.getAllQustions = async (queryParam) => {
         const skip = (page - 1) * limit; // 0 , 10
         // const skip = (page - 1) * 10; // 0 , 10
 
-        
-
         let collection = await dbConn.executeQry('qustion_db', 'allqustions');
 
         const documents = await collection.find().skip(skip).limit(limit).toArray();
         return { documents, page, limit };
 
     } catch (err) {
-        console.log("---dao>> ", err)
+        utils.loggs("---dao>> ", err)
         return -500
     }
 }
@@ -37,7 +36,7 @@ module.exports.getQustionById = async (body) => {
         return documents;
 
     } catch (err) {
-        console.log("---dao>> ", err)
+        utils.loggs("---dao>> ", err)
         return -500
     }
 }
@@ -60,7 +59,7 @@ module.exports.getQustionByQustionType = async (body) => {
         return documents;
 
     } catch (err) {
-        console.log("---dao>> ", err)
+        utils.loggs("---dao>> ", err)
         return -500
     }
 }
@@ -101,7 +100,7 @@ module.exports.getQustionByQustionInfo = async (body) => {
 
 
     } catch (err) {
-        console.log("---dao>> ", err)
+        utils.loggs("---dao>> ", err)
         return -500
     }
 }
@@ -110,11 +109,16 @@ module.exports.getQustionByQustionInfo = async (body) => {
 //------------- Dao for fetch qustion by order ---------------
 module.exports.getOrderWiseQustions = async (body) => {
     try {
-        let qustionOrderArr = body.orderArr;
+        let qustionOrderArr = body.topicArr;
+
         let collection = await dbConn.executeQry('qustion_db', 'allqustions');
+        const data = await collection.find({ id: { $in: qustionOrderArr } }).toArray();
+        const documents = qustionOrderArr.map(id => data.find(item => item.id === id.toString()));
+
+        return documents;
 
     } catch (err) {
-        console.log("---dao>> ", err)
+        utils.loggs("---dao>> ", err)
         return -500
     }
 }

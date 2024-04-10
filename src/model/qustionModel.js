@@ -1,6 +1,7 @@
 
 const qustionDao = require('../dao/qustionDao');
 const respStruc = require('../constants/respStructure')
+const utils = require('../utils/dataLog')
 
 //============= Modal of get all qustions ====== 
 module.exports.get_All_Qustions = async (queryParam) => {
@@ -54,7 +55,7 @@ module.exports.get_Qustion_by_id = async (body) => {
         }
 
     } catch (err) {
-        console.log("---modal>> ", err)
+        utils.loggs("---modal>> ", err)
         return respStruc.responseStruct(0, false, 500, 'Internal server error', false);
     }
 }
@@ -82,7 +83,7 @@ module.exports.get_Qustion_by_qustionType = async (body) => {
         }
 
     } catch (err) {
-        console.log("---modal>> ", err)
+        utils.loggs("---modal>> ", err)
         return respStruc.responseStruct(0, false, 500, 'Internal server error', false);
     }
 }
@@ -133,7 +134,7 @@ module.exports.get_Qustion_by_qustionInfo = async (body) => {
         }
 
     } catch (err) {
-        console.log("---modal>> ", err)
+        utils.loggs("---modal>> ", err)
         return respStruc.responseStruct(0, false, 500, 'Internal server error', false);
     }
 }
@@ -149,8 +150,19 @@ module.exports.get_order_wise_qustions = async (body) => {
 
 
 
+        if (result == null || result.length == 0) {
+            return respStruc.responseStruct(1, true, 200, 'No data found', result);
+        }
+        else if (result == -500) {
+            return respStruc.responseStruct(0, false, 500, 'Internal server error', false);
+        }
+        else {
+            return respStruc.responseStruct(1, true, 200, 'Data fetch successfully', result);
+        }
+
+
     } catch (err) {
-        console.log("---modal>> ", err)
+        utils.loggs("---modal>> ", err)
         return respStruc.responseStruct(0, false, 500, 'Internal server error', false);
     }
 }

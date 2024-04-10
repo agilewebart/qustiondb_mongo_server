@@ -1,5 +1,7 @@
-const respStruc = require('../constants/respStructure')
+const respStruc = require('../constants/respStructure');
+const util = require('../utils/dataLog')
 
+//++++++++++++++++++++++ Only qustion Middleware +++++++++++++++++++++++++++++++==
 
 //-------- For response modification -------------
 function modifiedResponseFn(catchResponse, res) {
@@ -86,7 +88,7 @@ module.exports.onlyQustions = async (req, res, next) => {
 
 
     } catch (err) {
-        console.log("---middleWare--->> ", err)
+        util.loggs("-------qustion middleware--->> ", err)
         return res.status(500).json({ success: true, status: 500, message: "Internal Server error" })
     }
 }
