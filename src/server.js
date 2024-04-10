@@ -4,7 +4,7 @@ const fs     =	require('fs');
 const util = require('./utils/dataLog')
 const app = express();
 const cors = require('cors');
-const mongoSanitize = require('express-mongo-sanitize');
+// const mongoSanitize = require('express-mongo-sanitize');
 const xssClean = require('xss-clean')
 // const xss = require('xss');
 const PORT = config.BACKEND_HOST.PORT || 9000;
@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 app.use(cors());
 //----------- Use for mongo sanitize -----------------
-app.use(mongoSanitize())
+// app.use(mongoSanitize())
 //-----------Prevent  Xss ----------------
 app.use(xssClean());
  
